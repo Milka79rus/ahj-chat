@@ -2,242 +2,241 @@
    1. ГЛОБАЛЬНЫЕ СТИЛИ И БАЗОВАЯ РАЗМЕТКА
    ========================================================================== */
 body {
-    margin: 0;
-    padding: 0;
-    background-color: #fdfdfd;
-    background-image:
-        linear-gradient(90deg, rgba(0, 0, 0, 0.03) 1px, transparent 1px),
-        linear-gradient(rgba(0, 0, 0, 0.03) 1px, transparent 1px);
-    background-size: 20px 20px;
+  margin: 0;
+  padding: 0;
+  background-color: #fdfdfd;
+  background-image: linear-gradient(90deg, rgba(0, 0, 0, 0.03) 1px, transparent 1px),
+    linear-gradient(rgba(0, 0, 0, 0.03) 1px, transparent 1px);
+  background-size: 20px 20px;
 }
 
 h1 {
-    margin: 0;
-    padding: 0;
+  margin: 0;
+  padding: 0;
 }
 
 .hidden {
-    display: none;
+  display: none;
 }
 
 #root {
-    font-family: 'Roboto', sans-serif;
-    color: #100c08;
-    padding-top: 20px;
+  font-family: 'Roboto', sans-serif;
+  color: #100c08;
+  padding-top: 20px;
 }
 
 .container {
-    width: 60%;
-    min-width: 500px;
-    margin-left: auto;
-    margin-right: auto;
-    padding: 20px;
-    border-radius: 5px;
-    box-sizing: border-box;
-    background-color: #fff;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  width: 60%;
+  min-width: 500px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 20px;
+  border-radius: 5px;
+  box-sizing: border-box;
+  background-color: #fff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
 }
 
 /* ==========================================================================
    2. КОНТЕЙНЕР ЧАТА И ЛЕВАЯ ПАНЕЛЬ (СПИСОК ПОЛЬЗОВАТЕЛЕЙ)
    ========================================================================== */
 .chat__header {
-    text-align: center;
-    margin-bottom: 10px;
-    color: #100c08;
+  text-align: center;
+  margin-bottom: 10px;
+  color: #100c08;
 }
 
 .chat__connect {
-    width: 150px;
-    margin-left: auto;
-    border-radius: 5px;
-    padding: 10px 20px;
-    text-align: center;
-    box-sizing: border-box;
-    background-color: #dee2e1;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
-    margin-bottom: 40px;
-    cursor: pointer;
+  width: 150px;
+  margin-left: auto;
+  border-radius: 5px;
+  padding: 10px 20px;
+  text-align: center;
+  box-sizing: border-box;
+  background-color: #dee2e1;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  margin-bottom: 40px;
+  cursor: pointer;
 }
 
 .chat__container {
-    width: 90%;
-    height: 550px;
-    margin: 25px auto 0 auto;
-    border: 1px solid #e2e5e9;
-    border-radius: 8px;
-    display: flex;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
-    overflow: hidden;
+  width: 90%;
+  height: 550px;
+  margin: 25px auto 0 auto;
+  border: 1px solid #e2e5e9;
+  border-radius: 8px;
+  display: flex;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  overflow: hidden;
 }
 
 .chat__userlist {
-    flex: 0 0 30%;
-    background-color: #edefec;
-    box-sizing: border-box;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding-top: 15px;
+  flex: 0 0 30%;
+  background-color: #edefec;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 15px;
 }
 
 #user-list {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    padding: 15px;
-    width: 100%;
-    box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 15px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .chat__user {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    width: 90%;
-    padding: 5px 10px;
-    margin-bottom: 10px;
-    box-sizing: border-box;
-    border-radius: 5px;
-    font-size: 16px;
-    background-color: #e0e6da;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 90%;
+  padding: 5px 10px;
+  margin-bottom: 10px;
+  box-sizing: border-box;
+  border-radius: 5px;
+  font-size: 16px;
+  background-color: #e0e6da;
 }
 
 .chat__user::before {
-    content: '';
-    display: inline-block;
-    width: 32px;
-    height: 32px;
-    border: 1px solid #ccc;
-    border-radius: 50%;
-    background-color: #fff;
-    flex-shrink: 0;
+  content: '';
+  display: inline-block;
+  width: 32px;
+  height: 32px;
+  border: 1px solid #ccc;
+  border-radius: 50%;
+  background-color: #fff;
+  flex-shrink: 0;
 }
 
-.chat__user[style*="bold"] {
-    color: #f44336;
+.chat__user[style*='bold'] {
+  color: #f44336;
 }
 
 /* ==========================================================================
    3. ОБЛАСТЬ СООБЩЕНИЙ И ОБЛАЧКА 
    ========================================================================== */
 .chat__area {
-    flex: 0 0 70%;
-    display: flex;
-    flex-direction: column;
+  flex: 0 0 70%;
+  display: flex;
+  flex-direction: column;
 }
 
 .chat__messages-container {
-    flex: 0 0 90%;
-    box-sizing: border-box;
-    overflow: hidden;
+  flex: 0 0 90%;
+  box-sizing: border-box;
+  overflow: hidden;
 }
 
 #messages-container {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    padding: 20px;
-    overflow-y: auto;
-    height: 100%;
-    box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 20px;
+  overflow-y: auto;
+  height: 100%;
+  box-sizing: border-box;
 }
 
 .message__container {
-    max-width: 65%;
-    width: fit-content;
-    padding: 10px 15px;
-    border: 1px solid #e0e0e0;
-    border-radius: 12px;
-    background-color: #fff;
-    display: flex;
-    flex-direction: column;
-    box-sizing: border-box;
-    word-break: break-word;
+  max-width: 65%;
+  width: fit-content;
+  padding: 10px 15px;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  background-color: #fff;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  word-break: break-word;
 }
 
 .message__header {
-    font-size: 14px;
-    color: #999;
-    margin-bottom: 5px;
+  font-size: 14px;
+  color: #999;
+  margin-bottom: 5px;
 }
 
 .message__container-yourself {
-    align-self: flex-end;
-    text-align: left;
-    border-bottom-right-radius: 0;
+  align-self: flex-end;
+  text-align: left;
+  border-bottom-right-radius: 0;
 }
 
 .message__container-yourself .message__header {
-    color: #20b1df;
+  color: #20b1df;
 }
 
 .message__container-interlocutor {
-    margin-right: auto;
-    text-align: left;
-    align-self: flex-start;
-    border-top-left-radius: 0;
+  margin-right: auto;
+  text-align: left;
+  align-self: flex-start;
+  border-top-left-radius: 0;
 }
 
 /* ==========================================================================
    4. СЛУЖЕБНЫЙ ВВОД 
    ========================================================================== */
 .chat__messages-input {
-    flex: 0 0 10%;
-    border-bottom-left-radius: 7px;
-    padding: 0 10px;
-    box-sizing: border-box;
-    display: flex;
-    align-items: center;
-    width: 100%;
+  flex: 0 0 10%;
+  border-bottom-left-radius: 7px;
+  padding: 0 10px;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  width: 100%;
 }
 
 .chat__messages-input form,
 .chat__messages-input .form,
 .chat__messages-input .form__group {
-    width: 100%;
-    display: flex;
-    align-items: center;
+  width: 100%;
+  display: flex;
+  align-items: center;
 }
 
 .form .form__group {
-    margin-bottom: 0;
+  margin-bottom: 0;
 }
 
 .form__group {
-    margin-bottom: 10px;
+  margin-bottom: 10px;
 }
 
 .form__label {
-    display: block;
-    margin-bottom: 5px;
+  display: block;
+  margin-bottom: 5px;
 }
 
 .form__input,
 #message-input {
-    display: block;
-    width: 100%;
-    box-sizing: border-box;
-    font-family: 'Roboto', sans-serif;
-    border: 1px solid #ccc;
-    border-radius: 20px;
-    padding: 10px 20px;
-    outline: none;
-    transition: border-color 0.2s;
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  font-family: 'Roboto', sans-serif;
+  border: 1px solid #ccc;
+  border-radius: 20px;
+  padding: 10px 20px;
+  outline: none;
+  transition: border-color 0.2s;
 }
 
 .form__input {
-    margin-top: 5px;
+  margin-top: 5px;
 }
 
 .form__input:focus,
 #message-input:focus {
-    border-color: #20b1df;
+  border-color: #20b1df;
 }
 
 .form__hint {
-    font-size: 14px;
-    color: red;
-    text-align: center;
-    margin-top: 5px;
+  font-size: 14px;
+  color: red;
+  text-align: center;
+  margin-top: 5px;
 }

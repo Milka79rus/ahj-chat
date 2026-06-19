@@ -13,11 +13,7 @@
     "no-plusplus": "off",
     "no-cond-assign": "off",
     "no-underscore-dangle": "off",
-    "no-restricted-syntax": [
-      "error",
-      "LabeledStatement",
-      "WithStatement"
-    ],
+    "no-restricted-syntax": ["error", "LabeledStatement", "WithStatement"],
     "no-unused-expressions": ["error", { "allowTernary": true }]
   }
 }
