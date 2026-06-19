@@ -5,9 +5,8 @@
 
 ##  Ссылки на проект
 
-* **Frontend (GitHub Pages):** [👉 Открыть чат в браузере]([https://milka79rus.github.io/Advanced-JavaScript-Toolset-in-the-Browser/](https://milka79rus.github.io/ahj-chat/)) 
+* **Frontend (GitHub Pages):** [👉 Открыть чат в браузере](https://milka79rus.github.io/ahj-chat/)
 * **Backend (Amvera Cloud):** `https://ahj-backend-milka-milka79rus.amvera.io`
-
 ---
 
 ##  Реализованный функционал
