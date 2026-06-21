@@ -1,16 +1,14 @@
-import ChatAPI from './api/ChatAPI';
-
 export default class Chat {
   constructor(container) {
     this.container = container;
-    this.api = new ChatAPI();
     this.websocket = null;
-    this.currentUser = null; // Данные текущего пользователя { id, name }
+    this.currentUser = null;
   }
 
   init() {
     this.bindToDOM();
     this.registerEvents();
+    this.subscribeOnEvents();
   }
 
   // Отрисовка базовой структуры
@@ -34,11 +32,9 @@ export default class Chat {
       </div>
 
       <div class="chat__container hidden" id="chat-window">
-        <div class="chat__userlist" id="user-list">
-          </div>
+        <div class="chat__userlist" id="user-list"></div>
         <div class="chat__area">
-          <div class="chat__messages-container" id="messages-container">
-            </div>
+          <div class="chat__messages-container" id="messages-container"></div>
           <div class="chat__messages-input">
             <form class="form" id="message-form">
               <div class="form__group">
@@ -51,7 +47,6 @@ export default class Chat {
     `;
   }
 
-  // Навешиваем обработчики событий
   registerEvents() {
     const authBtn = this.container.querySelector('#auth-submit-btn');
     const nicknameInput = this.container.querySelector('#nickname-input');
@@ -70,8 +65,8 @@ export default class Chat {
     });
   }
 
-  // Логика отправки ника на сервер
-  async onEnterChatHandler() {
+  // Логика отправки запроса на логин ВНУТРЬ СОКЕТА
+  onEnterChatHandler() {
     const nicknameInput = this.container.querySelector('#nickname-input');
     const errorHint = this.container.querySelector('#modal-error');
     const name = nicknameInput.value.trim();
@@ -82,138 +77,122 @@ export default class Chat {
       return;
     }
 
-    try {
-      const response = await this.api.login(name);
-
-      if (response.status === 'ok') {
-        this.currentUser = response.user;
-
-        this.container.querySelector('#auth-modal').classList.remove('active');
-        this.container.querySelector('#chat-window').classList.remove('hidden');
-
-        // Успешно залогинились — открываем WebSocket!
-        this.subscribeOnEvents();
-      }
-    } catch (error) {
-      errorHint.textContent = error.message || 'Этот никнейм уже занято!';
+    if (!this.websocket || this.websocket.readyState !== WebSocket.OPEN) {
+      errorHint.textContent = 'Сервер чата недоступен. Подождите...';
       errorHint.classList.remove('hidden');
+      return;
     }
+
+    this.websocket.send(
+      JSON.stringify({
+        type: 'login',
+        user: { name },
+      }),
+    );
   }
 
-  // Подключение к WebSocket и подписка на события сервера
+  // Подключение к WebSocket и разбор всех типов ответов
   subscribeOnEvents() {
-    // Проверяем, где запущен фронтенд
     const isLocal = window.location.hostname === 'localhost';
-
-    // Выбираем правильный адрес сокета (ws для локалки, wss для деплоя)
     const wsUrl = isLocal ? 'ws://localhost:3000' : 'wss://ahj-backend-milka-milka79rus.amvera.io';
 
-    // Открываем сокет-соединение
     this.websocket = new WebSocket(wsUrl);
 
-    // Слушаем сообщения от сервера
-    this.websocket.addEventListener('message', (event) => {
-      const data = JSON.parse(event.data);
+    this.websocket.addEventListener('open', () => {
+      // eslint-disable-next-line no-console
+      console.log('WebSocket connection opened');
+    });
 
-      // Сервер присылает либо массив юзеров, либо объект сообщения
-      if (Array.isArray(data)) {
-        this.renderUserList(data);
-      } else if (data.type === 'send') {
-        this.renderMessage(data);
+    this.websocket.addEventListener('message', (event) => {
+      const msg = JSON.parse(event.data);
+
+      // СЦЕНАРИЙ 1: Ошибка логина (имя занято)
+      if (msg.type === 'error') {
+        const errorHint = this.container.querySelector('#modal-error');
+        errorHint.textContent = msg.message;
+        errorHint.classList.remove('hidden');
+      }
+      // СЦЕНАРИЙ 2: Успешный вход
+      else if (msg.type === 'login_success') {
+        this.currentUser = msg.user;
+        this.container.querySelector('#auth-modal').classList.remove('active');
+        this.container.querySelector('#chat-window').classList.remove('hidden');
+      }
+      // СЦЕНАРИЙ 3: Сервер прислал обновленный список юзеров
+      else if (msg.type === 'users') {
+        this.renderUserList(msg.data);
+      }
+      // СЦЕНАРИЙ 4: Прилетело новое сообщение в чат
+      else if (msg.type === 'send') {
+        this.renderMessage(msg.data);
       }
     });
 
-    // Красиво выходим из чата при закрытии вкладки браузера
-    window.addEventListener('beforeunload', () => {
-      if (this.websocket && this.websocket.readyState === WebSocket.OPEN) {
-        this.websocket.send(
-          JSON.stringify({
-            type: 'exit',
-            user: this.currentUser,
-          }),
-        );
-      }
+    this.websocket.addEventListener('close', () => {
+      // eslint-disable-next-line no-console
+      console.log('WebSocket closed, attempting reconnect...');
+      this.reconnect();
+    });
+
+    this.websocket.addEventListener('error', () => {
+      // eslint-disable-next-line no-alert
+      alert('Произошла ошибка соединения с сервером');
     });
   }
 
-  // Отправка сообщения на сервер
+  reconnect() {
+    this.websocket = null;
+    setTimeout(() => {
+      this.subscribeOnEvents();
+    }, 3000);
+  }
+
+  // Отправка сообщения строго по структуре бэкенда
   sendMessage() {
     const messageInput = this.container.querySelector('#message-input');
     const text = messageInput.value.trim();
 
-    if (!text || !this.websocket || this.websocket.readyState !== WebSocket.OPEN) {
-      return;
-    }
+    if (!text || !this.websocket || this.websocket.readyState !== WebSocket.OPEN) return;
 
-    // Собираем объект сообщения строго по спецификации бэкенда
-    const messageData = {
-      type: 'send',
-      message: text,
-      user: this.currentUser,
-    };
-
-    this.websocket.send(JSON.stringify(messageData));
-    messageInput.value = ''; // Очищаем поле ввода
+    this.websocket.send(
+      JSON.stringify({
+        type: 'send',
+        data: { message: text, user: this.currentUser },
+      }),
+    );
+    messageInput.value = '';
   }
 
   // Отрисовка сообщения на экране
   renderMessage(msg) {
     const messagesContainer = this.container.querySelector('#messages-container');
     const messageEl = document.createElement('div');
+    const isMe = this.currentUser && msg.user.name === this.currentUser.name;
+    const formattedDate = new Date().toLocaleString('ru-RU', { hour: '2-digit', minute: '2-digit' });
 
-    // Проверяем, наше ли это сообщение
-    const isMe = msg.user.name === this.currentUser.name;
-
-    // Генерируем красивую дату в формате ЧЧ:ММ ДД.ММ.ГГГГ
-    const formattedDate = new Date()
-      .toLocaleString('ru-RU', {
-        hour: '2-digit',
-        minute: '2-digit',
-        day: '2-digit',
-        month: '2-digit',
-        year: 'numeric',
-      })
-      .replace(',', '');
-
-    if (isMe) {
-      // Мои сообщения — вправо, имя меняем на "You"
-      messageEl.className = 'message__container message__container-yourself';
-      messageEl.innerHTML = `
-        <div class="message__header">You, ${formattedDate}</div>
-        <div class="message__text">${msg.message}</div>
-      `;
-    } else {
-      // Чужие сообщения — влево, пишем реальный никнейм
-      messageEl.className = 'message__container message__container-interlocutor';
-      messageEl.innerHTML = `
-        <div class="message__header">${msg.user.name}, ${formattedDate}</div>
-        <div class="message__text">${msg.message}</div>
-      `;
-    }
-
+    messageEl.className = `message__container ${
+      isMe ? 'message__container-yourself' : 'message__container-interlocutor'
+    }`;
+    messageEl.innerHTML = `
+      <div class="message__header">${isMe ? 'You' : msg.user.name}, ${formattedDate}</div>
+      <div class="message__text">${msg.message}</div>
+    `;
     messagesContainer.appendChild(messageEl);
-
-    // Автоматический скролл вниз при получении новых сообщений
     messagesContainer.scrollTop = messagesContainer.scrollHeight;
   }
 
-  // Отрисовка списка пользователей слева
   renderUserList(users) {
     const userListContainer = this.container.querySelector('#user-list');
-    userListContainer.innerHTML = ''; // Очищаем старый список
-
+    userListContainer.innerHTML = '';
     users.forEach((user) => {
       const userEl = document.createElement('div');
       userEl.className = 'chat__user';
-
-      // Выделяем себя в списке для удобства
-      if (user.name === this.currentUser.name) {
+      if (this.currentUser && user.name === this.currentUser.name) {
         userEl.textContent = `${user.name} (You)`;
         userEl.style.fontWeight = 'bold';
       } else {
         userEl.textContent = user.name;
       }
-
       userListContainer.appendChild(userEl);
     });
   }

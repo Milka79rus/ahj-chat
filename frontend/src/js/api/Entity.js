@@ -1,11 +1,1 @@
-export default class Entity {
-  list() {}
-
-  get() {}
-
-  create() {}
-
-  update() {}
-
-  delete() {}
-}
+export default class Entity {}

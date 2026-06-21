@@ -2,7 +2,7 @@ name: Netology AHJ
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   workflow_dispatch:
 
 permissions:
@@ -11,7 +11,7 @@ permissions:
   id-token: write
 
 concurrency:
-  group: 'pages'
+  group: "pages"
   cancel-in-progress: false
 
 jobs:
@@ -33,16 +33,16 @@ jobs:
         with:
           node-version: 22.14.0
       - run: cd frontend && npm install
-      
+
       - name: Run E2E Puppeteer tests
         run: |
           cd frontend
           # Убиваем всё, что заняло порт
           sudo fuser -k 8080/tcp || true
-          
+
           # Собираем проект
           npm run build
-          
+
           # Запускаем сервер на папке dist и просто оставляем его работать
           npx serve dist -l 8080 &
           sleep 5 # Даем серверу 5 секунд на запуск
@@ -62,16 +62,16 @@ jobs:
           node-version: 22.14.0
       - run: cd frontend && npm install
       - run: cd frontend && npm run build
-      
+
       - name: Setup Pages
         uses: actions/configure-pages@v4
-        
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
           # Указываем путь к папке dist внутри фронтенда
-          path: 'frontend/dist'
-          
+          path: "frontend/dist"
+
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
