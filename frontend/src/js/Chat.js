@@ -70,12 +70,6 @@ export default class Chat {
     const nicknameInput = this.container.querySelector('#nickname-input');
     const errorHint = this.container.querySelector('#modal-error');
     const name = nicknameInput.value.trim();
-    // eslint-disable-next-line no-console
-    console.log('Клик сработал! Введенное имя:', name);
-    if (this.websocket) {
-      // eslint-disable-next-line no-console
-      console.log('Статус сокета (readyState):', this.websocket.readyState, 'Ожидаем OPEN (1):', WebSocket.OPEN);
-    }
 
     if (!name) {
       errorHint.textContent = 'Имя не может быть пустым!';
@@ -88,8 +82,7 @@ export default class Chat {
       errorHint.classList.remove('hidden');
       return;
     }
-    // eslint-disable-next-line no-console
-    console.log('Отправляем данные на сервер...');
+
     this.websocket.send(
       JSON.stringify({
         type: 'login',
