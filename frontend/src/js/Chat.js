@@ -179,8 +179,9 @@ export default class Chat {
     const isMe = this.currentUser && msg.user.name === this.currentUser.name;
     const formattedDate = new Date().toLocaleString('ru-RU', { hour: '2-digit', minute: '2-digit' });
 
-    messageEl.className = `message__container ${isMe ? 'message__container-yourself' : 'message__container-interlocutor'
-      }`;
+    messageEl.className = `message__container ${
+      isMe ? 'message__container-yourself' : 'message__container-interlocutor'
+    }`;
     messageEl.innerHTML = `
       <div class="message__header">${isMe ? 'You' : msg.user.name}, ${formattedDate}</div>
       <div class="message__text">${msg.message}</div>
