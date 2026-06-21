@@ -70,10 +70,11 @@ export default class Chat {
     const nicknameInput = this.container.querySelector('#nickname-input');
     const errorHint = this.container.querySelector('#modal-error');
     const name = nicknameInput.value.trim();
-
-    console.log("Клик сработал! Введенное имя:", name);
+    // eslint-disable-next-line no-console
+    console.log('Клик сработал! Введенное имя:', name);
     if (this.websocket) {
-      console.log("Статус сокета (readyState):", this.websocket.readyState, "Ожидаем OPEN (1):", WebSocket.OPEN);
+      // eslint-disable-next-line no-console
+      console.log('Статус сокета (readyState):', this.websocket.readyState, 'Ожидаем OPEN (1):', WebSocket.OPEN);
     }
 
     if (!name) {
@@ -87,8 +88,8 @@ export default class Chat {
       errorHint.classList.remove('hidden');
       return;
     }
-
-    console.log("Отправляем данные на сервер...");
+    // eslint-disable-next-line no-console
+    console.log('Отправляем данные на сервер...');
     this.websocket.send(
       JSON.stringify({
         type: 'login',
@@ -176,8 +177,9 @@ export default class Chat {
     const isMe = this.currentUser && msg.user.name === this.currentUser.name;
     const formattedDate = new Date().toLocaleString('ru-RU', { hour: '2-digit', minute: '2-digit' });
 
-    messageEl.className = `message__container ${isMe ? 'message__container-yourself' : 'message__container-interlocutor'
-      }`;
+    messageEl.className = `message__container ${
+      isMe ? 'message__container-yourself' : 'message__container-interlocutor'
+    }`;
     messageEl.innerHTML = `
       <div class="message__header">${isMe ? 'You' : msg.user.name}, ${formattedDate}</div>
       <div class="message__text">${msg.message}</div>
